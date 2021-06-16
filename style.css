@@ -1,0 +1,101 @@
+* {
+    margin: auto;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 100vh;
+}
+
+div {
+    display: flex;
+    justify-content: space-between;
+}
+
+.desktop {
+    /* margin: 0; */
+    width: 100%;
+}
+
+.noPieceHere {
+    background-color: #F0D2B4;
+}
+
+td {
+    text-align: center;
+    background-color: #BA7A3A;
+    width: 70px;
+    height: 70px;
+}
+
+/* table {
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+} */
+
+.red-turn-text {
+    text-align: center;
+    color: black;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 55px;
+}
+
+.black-turn-text {
+    text-align: center;
+    font-family:'Courier New', Courier, monospace;
+    font-size: 55px;
+    color: lightgray;
+}
+
+.black-piece {
+    width: 45px;
+    height: 45px;
+    /* padding: 12px; */
+    background-color: black;
+    border: 1px solid white;
+    border-radius: 30px;
+    /* box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px; */
+}
+
+.red-piece {
+    width: 45px;
+    height: 45px;
+    /* padding: 12px; */
+    background-color: red;
+    border: 1px solid white;
+    border-radius: 30px;
+    /* box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px; */
+}
+
+.king.red-piece {
+    background-color: orange;
+}
+
+.king.black-piece {
+    background-color: purple;
+}
+
+p {
+    display: inline-block;
+}
+
+
+span {
+    display: inline-block;
+}
+
+
+body {
+    background: url("./Images/wood-pattern.png"); 
+}
+
+
+.possibleMove {
+    background: rgb(13, 124, 151);
+}
+
+.possibleJump {
+    background: rgb(15, 96, 218);
+}
