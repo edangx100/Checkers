@@ -30,17 +30,19 @@ const board = [
 
 // ======= DOM elements ========
 const cells1D = $("td");
-const cells = [];
+let cells = [];
 while(cells1D.length) cells.push( cells1D.splice(0,8) );  // to make 2D array
 
-let redsPieces = $("p")
-let blacksPieces = $("span")
+const redPiece = "p";
+const blackPiece = "span";
+let redsPieces = $(redPiece)
+let blacksPieces = $(blackPiece)
 const redTurnText = $(".red-turn-text")
 const blackTurntext = $(".black-turn-text")
 
 
 // player 
-let turn = true;
+let redTurn = true;
 let redScore = 12;
 let blackScore = 12;
 let playerPieces;
@@ -60,7 +62,7 @@ let selectedPiece = {
 // initialize event listeners on pieces
  const givePiecesEventListeners = () => {
 
-    if (turn) {
+    if (redTurn) {
         for (let i = 0; i < redsPieces.length; i++) {
             $(redsPieces[i]).on( "click" , getPlayerPieces);
         }
@@ -76,29 +78,35 @@ let selectedPiece = {
 // holds the length of the players piece count
 const getPlayerPieces = () => {
 
-    if (turn) {
+    if (redTurn) {
         playerPieces = redsPieces;
     } else {
         playerPieces = blacksPieces;
     }
 
-    removeCellonclick();
-    resetBorders();
-    resetSelectedPieceProperties();
+    // let newCells = removeCellonclick(cells)
+    // cells = newCells.map(function(arr) {
+    //     return arr.slice();
+    // });
+    removeCellonclick(cells);
 
-    getSelectedPiece();
+    resetBorders(playerPieces);
+    resetSelectedPieceProperties(selectedPiece);
+
+    getSelectedPiece(selectedPiece);
 
     // --------- imported functions ---------
-    getAvailableMoveSpaces(selectedPiece, board, cells, turn);   
+    getAvailableMoveSpaces(selectedPiece, board, cells, redTurn);   
 
     const pieceCoord = {...selectedPiece.indexOfBoardPiece};
     console.log(pieceCoord);
-    checkAvailableJumpSpaces(selectedPiece, board, cells, turn, "", pieceCoord );
+    checkAvailableJumpSpaces(selectedPiece, board, cells, redTurn, "", pieceCoord );
     // --------------------------------------
     
     // event listener added to possible move positions
-    givePieceBorder_andClick();
+    givePieceBorderandClick(selectedPiece);
 }
+
 
 
 // removes possible moves from previous selected piece (* remove when user re-select a piece *)
@@ -113,6 +121,9 @@ const removeCellonclick = () => {
             cells[i][j].classList.remove("possibleMove");
             cells[i][j].classList.remove("possibleJump");
         }
+
+    return;
+ 
 }
 
 // resets borders to default
@@ -120,9 +131,6 @@ const resetBorders = () =>  {
     for (let i = 0; i < playerPieces.length; i++) {
         playerPieces[i].style.border = "1px solid white";
     }
-
-    // resetSelectedPieceProperties();
-    // getSelectedPiece();
 
     console.log("resetBorders"); 
 
@@ -197,13 +205,12 @@ const isPieceKing = () => {
 
 
 // gives the piece a green highlight for the user (showing its movable)
-const givePieceBorder_andClick = () => {
+const givePieceBorderandClick = (selectedPiece) => {
 
     console.log( selectedPiece.possibleMoveSpaces );
     console.log( selectedPiece.possibleMoveSpaces[0] );
 
     if (selectedPiece.possibleMoveSpaces.length !== 0 ) {
-        // document.getElementById(selectedPiece.pieceId).style.border = "3px solid green";
         $(`#${selectedPiece.pieceId}`).css( "border", "3px solid green" );
         
         giveCellsClick();
@@ -249,30 +256,32 @@ const makeMove = (event) => {
     $(`${selectedPiece.pieceId}`).remove();
     cells[presentRow][presentCol].innerHTML = "";
 
+    const redPiece = "p";
+    const blackPiece = "span";
 
-    if (turn) {
+    if (redTurn) {
         if (selectedPiece.isKing) {
             cells[moveToRow][moveToCol].innerHTML = `<p class="red-piece king" id="${selectedPiece.pieceId}"></p>`;
-            redsPieces = $("p");
+            redsPieces = $(redPiece);
         } else {
             cells[moveToRow][moveToCol].innerHTML = `<p class="red-piece" id="${selectedPiece.pieceId}"></p>`;
-            redsPieces = $("p");
+            redsPieces = $(redPiece);
         }
     } else {
         if (selectedPiece.isKing) {
             cells[moveToRow][moveToCol].innerHTML = `<span class="black-piece king" id="${selectedPiece.pieceId}"></span>`;
-            blacksPieces = $("span");
+            blacksPieces = $(blackPiece);
         } else {
             cells[moveToRow][moveToCol].innerHTML = `<span class="black-piece" id="${selectedPiece.pieceId}"></span>`;
-            blacksPieces = $("span");
+            blacksPieces = $(blackPiece);
         }
     }
 
 
-    const opponent_UL = opponentUpLeft(selectedPiece.indexOfBoardPiece, board, turn);
-    const opponent_UR = opponentUpRight(selectedPiece.indexOfBoardPiece, board, turn);
-    const opponent_DL = opponentDownLeft(selectedPiece.indexOfBoardPiece, board, turn);
-    const opponent_DR = opponentDownRight(selectedPiece.indexOfBoardPiece, board, turn);
+    const opponent_UL = opponentUpLeft(selectedPiece.indexOfBoardPiece, board, redTurn);
+    const opponent_UR = opponentUpRight(selectedPiece.indexOfBoardPiece, board, redTurn);
+    const opponent_DL = opponentDownLeft(selectedPiece.indexOfBoardPiece, board, redTurn);
+    const opponent_DR = opponentDownRight(selectedPiece.indexOfBoardPiece, board, redTurn);
 
 
     if ( jumpDirection !== "" ) {  // If it is a jump
@@ -307,10 +316,10 @@ const changeData = ( [presentRow_param, presentCol_param], possibleMove_param, r
     board[moveToRow][moveToCol] = parseInt(selectedPiece.pieceId);
     console.log( board[moveToRow][moveToCol] );
 
-    if ( turn && moveToRow===7 ) {// if red's turn and last row
+    if ( redTurn && moveToRow===7 ) {// if red's turn and last row
         $(`#${selectedPiece.pieceId}`).addClass("king");
     }
-    if ( !turn && moveToRow===0 ) {// if red's turn and last row
+    if ( !redTurn && moveToRow===0 ) {// if red's turn and last row
         $(`#${selectedPiece.pieceId}`).addClass("king");
     }
 
@@ -327,24 +336,24 @@ const changeData = ( [presentRow_param, presentCol_param], possibleMove_param, r
             board[oppRow][oppCol] = null;
             cells[oppRow][oppCol].innerHTML ="";
 
-            if (turn) blackScore--;
-            if (!turn) redScore--;
+            if (redTurn) blackScore--;
+            if (!redTurn) redScore--;
         }
 
         console.log( "black " + blackScore + ", red " + redScore);
     }
 
-    resetSelectedPieceProperties();
+    resetSelectedPieceProperties(selectedPiece);
     removeCellonclick();
-    removeEventListeners();
+    removeEventListeners(redTurn);
 
 }
 
 // ======================
 
 // removes the 'on click' event listeners for pieces
-const removeEventListeners = () => {
-    if (turn) {
+const removeEventListeners = (redTurn) => {
+    if (redTurn) {
         for (let i = 0; i < redsPieces.length; i++) {
             $(redsPieces[i]).off( "click" , getPlayerPieces);
         }
@@ -359,35 +368,53 @@ const removeEventListeners = () => {
 // Checks for a win
 const checkForWin = () => {
     if (blackScore === 0) {
-        for (let i = 0; i < redTurnText.length; i++) {
-            redTurnText[i].style.color = "black";
-            blackTurntext[i].style.display = "none";
-            redTurnText[i].textContent = "RED WINS!";
+        // for (let i = 0; i < redTurnText.length; i++) {
+        //     redTurnText[i].style.color = "black";
+        //     blackTurntext[i].style.display = "none";
+        //     redTurnText[i].textContent = "RED WINS!";
+        // }
+        redTurnText[0].style.color = "black";
+        blackTurntext[0].style.display = "none";
+        redTurnText[0].textContent = "RED WINS!";
         }
-    } else if (redScore === 0) {
-        for (let i = 0; i < blackTurntext.length; i++) {            
-            blackTurntext[i].style.color = "black";
-            redTurnText[i].style.display = "none";
-            blackTurntext[i].textContent = "BLACK WINS!";
-        }
+    
+    else if (redScore === 0) {
+        // for (let i = 0; i < blackTurntext.length; i++) {            
+        //     blackTurntext[i].style.color = "black";
+        //     redTurnText[i].style.display = "none";
+        //     blackTurntext[i].textContent = "BLACK WINS!";
+        // }
+        blackTurntext[0].style.color = "black";
+        redTurnText[0].style.display = "none";
+        blackTurntext[0].textContent = "BLACK WINS!";
+    
     }
     changePlayer();
 }
 
 // Switches players turn
 const changePlayer = () => {
-    if (turn) {
-        turn = false;
-        for (let i = 0; i < redTurnText.length; i++) {
-            redTurnText[i].style.color = "lightGrey";
-            blackTurntext[i].style.color = "black";
-        }
+
+    console.log("oooooi");
+    console.log(redTurnText[0]);
+
+    if (redTurn) {
+        redTurn = false;
+        // for (let i = 0; i < redTurnText.length; i++) {
+        //     redTurnText[i].style.color = "lightGrey";
+        //     blackTurntext[i].style.color = "black";
+        // }
+        redTurnText[0].style.color = "lightGrey";
+        blackTurntext[0].style.color = "black";
+        
     } else {
-        turn = true;
-        for (let i = 0; i < blackTurntext.length; i++) {
-            blackTurntext[i].style.color = "lightGrey";
-            redTurnText[i].style.color = "black";
-        }
+        redTurn = true;
+        // for (let i = 0; i < blackTurntext.length; i++) {
+        //     blackTurntext[i].style.color = "lightGrey";
+        //     redTurnText[i].style.color = "black";
+        // }
+        blackTurntext[0].style.color = "lightGrey";
+        redTurnText[0].style.color = "black";
     }
     givePiecesEventListeners();
 }
