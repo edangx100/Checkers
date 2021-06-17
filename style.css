@@ -31,15 +31,16 @@ td {
     height: 70px;
 }
 
-/* table {
+table {
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-} */
+}
 
 .red-turn-text {
     text-align: center;
     color: black;
     font-family: 'Courier New', Courier, monospace;
     font-size: 55px;
+    text-shadow: 1px 1px gray;
 }
 
 .black-turn-text {
@@ -47,6 +48,7 @@ td {
     font-family:'Courier New', Courier, monospace;
     font-size: 55px;
     color: lightgray;
+    text-shadow: 1px 1px gray;
 }
 
 .black-piece {
@@ -56,7 +58,7 @@ td {
     background-color: black;
     border: 1px solid white;
     border-radius: 30px;
-    /* box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px; */
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 
 .red-piece {
@@ -66,7 +68,7 @@ td {
     background-color: red;
     border: 1px solid white;
     border-radius: 30px;
-    /* box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px; */
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 
 .king.red-piece {

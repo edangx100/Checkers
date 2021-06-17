@@ -379,11 +379,6 @@ const checkForWin = () => {
         }
     
     else if (redScore === 0) {
-        // for (let i = 0; i < blackTurntext.length; i++) {            
-        //     blackTurntext[i].style.color = "black";
-        //     redTurnText[i].style.display = "none";
-        //     blackTurntext[i].textContent = "BLACK WINS!";
-        // }
         blackTurntext[0].style.color = "black";
         redTurnText[0].style.display = "none";
         blackTurntext[0].textContent = "BLACK WINS!";
@@ -395,15 +390,10 @@ const checkForWin = () => {
 // Switches players turn
 const changePlayer = () => {
 
-    console.log("oooooi");
     console.log(redTurnText[0]);
 
     if (redTurn) {
         redTurn = false;
-        // for (let i = 0; i < redTurnText.length; i++) {
-        //     redTurnText[i].style.color = "lightGrey";
-        //     blackTurntext[i].style.color = "black";
-        // }
         redTurnText[0].style.color = "lightGrey";
         blackTurntext[0].style.color = "black";
         
