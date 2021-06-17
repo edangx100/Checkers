@@ -9,9 +9,10 @@
 
 ### Most challenging part of the project
 - Figuring out the logic and data structure to enable 'Multiple jumps'
-![alt text](https://github.com/edangx100/Checkers/blob/main/Images/image2.png?raw=true)
-![alt text](https://github.com/edangx100/Checkers/blob/main/Images/image3.png?raw=true)
-![alt text](https://github.com/edangx100/Checkers/blob/main/Images/image4.png?raw=true)
+![alt text](https://github.com/edangx100/Checkers/blob/main/Images/image1.jpg?raw=true)
+![alt text](https://github.com/edangx100/Checkers/blob/main/Images/image2.jpg?raw=true)
+![alt text](https://github.com/edangx100/Checkers/blob/main/Images/image3.jpg?raw=true)
+![alt text](https://github.com/edangx100/Checkers/blob/main/Images/image4.jpg?raw=true)
 
 ### Further work and next steps
 1) Functions modularity can be improved.
