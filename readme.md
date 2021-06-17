@@ -14,3 +14,4 @@
 ![alt text](https://github.com/edangx100/Checkers/blob/main/Images/image4.png?raw=true)
 
 ### Further work and next steps
+Next step: Win condition when player runs out of moves

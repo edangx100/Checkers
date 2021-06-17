@@ -363,22 +363,6 @@ const removeEventListeners = (redTurn) => {
     checkForWin();
 }
 
-
-// Check whether opponent run out of moves
-const checkOpponentMoves = (redTurn) => {
-    
-    let opponentCanMove = true;
-    
-    if(redTurn) {
-        for (let i = 0; i < blackTurntext.length; i++) {
-                blackTurntext[i].style.color = "lightGrey";
-                redTurnText[i].style.color = "black";
-            }
-    }
-    
-    return opponentCanMove;
-}
-
 // Checks for a win
 const checkForWin = () => {
     if (blackScore === 0) {
@@ -392,7 +376,7 @@ const checkForWin = () => {
         redTurnText[0].style.display = "none";
         blackTurntext[0].textContent = "BLACK WINS!";
     
-    } 
+    }
     changePlayer();
 }
 
