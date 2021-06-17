@@ -1,4 +1,4 @@
-export { getAvailableMoveSpaces, checkAvailableJumpSpaces }; 
+export { getAvailableMoveSpaces, checkAvailableJumpSpaces, checkOpponentPieceMoves, checkOpponentPieceJumps }; 
 export { opponentUpLeft, opponentUpRight, opponentDownLeft, opponentDownRight }; 
 
 
@@ -28,16 +28,16 @@ const moveDownRight = (coordinate) => {
         jumpDir: ""  };
 };
 
-const getAvailableMoveSpaces = (selectedPiece, board, cells, redTurn) => {
+const getAvailableMoveSpaces = (selectedPiece_param, board, cells, redTurn) => {
 
-    console.log(selectedPiece.indexOfBoardPiece);
+    console.log(selectedPiece_param.indexOfBoardPiece);
     console.log('move');
 
     // get permuation of coordinates of moves to check
-    const upLeftCoord = moveUpLeft( selectedPiece.indexOfBoardPiece );
-    const upRightCoord = moveUpRight( selectedPiece.indexOfBoardPiece );
-    const downLeftCoord = moveDownLeft( selectedPiece.indexOfBoardPiece );
-    const downRightCoord = moveDownRight( selectedPiece.indexOfBoardPiece );
+    const upLeftCoord = moveUpLeft( selectedPiece_param.indexOfBoardPiece );
+    const upRightCoord = moveUpRight( selectedPiece_param.indexOfBoardPiece );
+    const downLeftCoord = moveDownLeft( selectedPiece_param.indexOfBoardPiece );
+    const downRightCoord = moveDownRight( selectedPiece_param.indexOfBoardPiece );
     // console.log(downLeftCoord);
 
 
@@ -46,10 +46,10 @@ const getAvailableMoveSpaces = (selectedPiece, board, cells, redTurn) => {
             $(cells[upLeftCoord.row][upLeftCoord.col]).hasClass("noPieceHere") !== true) {
             
             // '!redTurn' means black turn
-            if ( !redTurn || selectedPiece.isKing) {  
+            if ( !redTurn || selectedPiece_param.isKing) {  
                 console.log('upLeft possible');
                 $(cells[upLeftCoord.row][upLeftCoord.col]).addClass("possibleMove");
-                selectedPiece.possibleMoveSpaces.push( upLeftCoord );
+                selectedPiece_param.possibleMoveSpaces.push( upLeftCoord );
             }
         }
     }
@@ -59,10 +59,10 @@ const getAvailableMoveSpaces = (selectedPiece, board, cells, redTurn) => {
             $(cells[upRightCoord.row][upRightCoord.col]).hasClass("noPieceHere") !== true) {
 
             // '!redTurn' means black turn
-            if ( !redTurn || selectedPiece.isKing) { 
+            if ( !redTurn || selectedPiece_param.isKing) { 
                 console.log('upRight possible');
                 $(cells[upRightCoord.row][upRightCoord.col]).addClass("possibleMove");
-                selectedPiece.possibleMoveSpaces.push( upRightCoord );
+                selectedPiece_param.possibleMoveSpaces.push( upRightCoord );
             }
         }
     }
@@ -73,12 +73,11 @@ const getAvailableMoveSpaces = (selectedPiece, board, cells, redTurn) => {
         if (board[downLeftCoord.row][downLeftCoord.col] === null && 
             $(cells[downLeftCoord.row][downLeftCoord.col]).hasClass("noPieceHere") !== true) {
             
-            if ( redTurn || selectedPiece.isKing) {
+            if ( redTurn || selectedPiece_param.isKing) {
                 console.log('downLeft possible');
                 $(cells[downLeftCoord.row][downLeftCoord.col]).addClass("possibleMove");
-                selectedPiece.possibleMoveSpaces.push( downLeftCoord );
-            }
-                
+                selectedPiece_param.possibleMoveSpaces.push( downLeftCoord );
+            }            
         }
     }
 
@@ -88,14 +87,13 @@ const getAvailableMoveSpaces = (selectedPiece, board, cells, redTurn) => {
             $(cells[downRightCoord.row][downRightCoord.col]).hasClass("noPieceHere") !== true) {
 
 
-            if ( redTurn || selectedPiece.isKing) {
+            if ( redTurn || selectedPiece_param.isKing) {
                 console.log('downRight possible');
                 $(cells[downRightCoord.row][downRightCoord.col]).addClass("possibleMove");
-                selectedPiece.possibleMoveSpaces.push( downRightCoord );
-            }
+                selectedPiece_param.possibleMoveSpaces.push( downRightCoord );
+            } 
         }
     }
-    
 }
 
 
@@ -355,3 +353,201 @@ const checkAvailableJumpSpaces = ( selectedPiece, board, cells, redTurn, previou
     }
 }
 
+
+
+// ================ check if one opponent piece can still move ================ 
+
+const checkOpponentPieceMoves = (selectedPiece_param, board, cells, checkColor) => {
+
+    // console.log(selectedPiece_param.indexOfBoardPiece);
+    // console.log(selectedPiece_param.pieceId);
+    console.log('opponent move check');
+
+    let canMove = false;
+
+    // get permuation of coordinates of moves to check
+    const upLeftCoord = moveUpLeft( selectedPiece_param.indexOfBoardPiece );
+    const upRightCoord = moveUpRight( selectedPiece_param.indexOfBoardPiece );
+    const downLeftCoord = moveDownLeft( selectedPiece_param.indexOfBoardPiece );
+    const downRightCoord = moveDownRight( selectedPiece_param.indexOfBoardPiece );
+    // console.log(downLeftCoord);
+
+
+    if (upLeftCoord.row >=0 && upLeftCoord.col>=0) {
+        if (board[upLeftCoord.row][upLeftCoord.col] === null && 
+            $(cells[upLeftCoord.row][upLeftCoord.col]).hasClass("noPieceHere") !== true) {
+            
+            // for black piece check only
+            if ( checkColor==="checkBlack" || selectedPiece_param.isKing ) {  
+                if (canMove === false) {
+                    canMove = true;
+                }
+            }
+        }
+    }
+
+    if (upRightCoord.row >=0 && upRightCoord.col>=0) {
+        if (board[upRightCoord.row][upRightCoord.col] === null && 
+            $(cells[upRightCoord.row][upRightCoord.col]).hasClass("noPieceHere") !== true) {
+
+            // for black piece check only
+            if ( checkColor==="checkBlack" || selectedPiece_param.isKing ) {  
+                if (canMove === false) {
+                    canMove = true;
+                }
+            }
+        }
+    }
+
+    // more checks for black pieces
+    if (downLeftCoord.row >=0 && downLeftCoord.row<8 && 
+        downLeftCoord.col>=0 && downLeftCoord.col<8) {
+        if (board[downLeftCoord.row][downLeftCoord.col] === null && 
+            $(cells[downLeftCoord.row][downLeftCoord.col]).hasClass("noPieceHere") !== true) {
+
+            // for red piece check only
+            if ( checkColor==="checkRed" || selectedPiece_param.isKing ) {  
+
+                if (canMove === false) {
+                    canMove = true;
+                }
+            }               
+        }
+    }
+
+    if (downRightCoord.row >=0 && downRightCoord.row<8 && 
+        downRightCoord.col>=0 && downRightCoord.col<8) {
+        if (board[downRightCoord.row][downRightCoord.col] === null && 
+            $(cells[downRightCoord.row][downRightCoord.col]).hasClass("noPieceHere") !== true) {
+
+            // for red piece check only
+            if ( checkColor==="checkRed" || selectedPiece_param.isKing ) {  
+
+                if (canMove === false) {
+                    canMove = true;
+                }
+            }   
+        }
+    }
+
+    return canMove;
+}
+
+
+
+
+// ================ check if one opponent piece can still jump ================ 
+
+const checkOpponentPieceJumps = ( selectedPiece, board, cells, redTurn, checkColor ) => {
+
+    console.log(selectedPiece.indexOfBoardPiece);
+    console.log(selectedPiece.pieceId);
+    console.log('opponent jump check');
+
+    let canJump = false;
+
+    const jumpFromCoord = selectedPiece.indexOfBoardPiece;
+
+    const jumpUpLeftCoord = jumpUpLeft( jumpFromCoord );
+    const jumpUpRightCoord = jumpUpRight( jumpFromCoord );
+    const jumpDownLeftCoord = jumpDownLeft( jumpFromCoord);
+    const jumpDownRightCoord = jumpDownRight( jumpFromCoord );
+
+    // console.log( "opponent UL ");
+    // console.log( opponentUpLeft(jumpFromCoord, board, !redTurn) );
+    // console.log( "opponent UR ");
+    // console.log( opponentUpRight(jumpFromCoord, board, !redTurn) );
+    // console.log( "opponent DL ");
+    // console.log( opponentDownLeft(jumpFromCoord, board, !redTurn) );
+    // console.log( "opponent DR ");
+    // console.log( opponentDownRight(jumpFromCoord, board, !redTurn) );
+
+    const opponent_UL = opponentUpLeft(jumpFromCoord, board, !redTurn);
+    const opponent_UR = opponentUpRight(jumpFromCoord, board, !redTurn);
+    const opponent_DL = opponentDownLeft(jumpFromCoord, board, !redTurn);
+    const opponent_DR = opponentDownRight(jumpFromCoord, board, !redTurn);
+
+
+
+    if (jumpUpLeftCoord.row >=0 && jumpUpLeftCoord.col>=0) {
+
+        if ( board[jumpUpLeftCoord.row][jumpUpLeftCoord.col] === null && 
+            cells[jumpUpLeftCoord.row][jumpUpLeftCoord.col].classList.contains("noPieceHere") !== true &&
+            opponent_UL.opponentExist ) {
+            
+            // for black piece check only
+            if ( redTurn ) {
+                if ( checkColor==="checkBlack" || selectedPiece.isKing ) {  
+                    if (canJump === false) {
+                        canJump = true;
+                    }
+                }
+            }
+        }
+    }
+    
+
+
+    if (jumpUpRightCoord.row >=0 && jumpUpRightCoord.col>=0) {
+
+        if ( board[jumpUpRightCoord.row][jumpUpRightCoord.col] === null && 
+            cells[jumpUpRightCoord.row][jumpUpRightCoord.col].classList.contains("noPieceHere") !== true &&
+            opponent_UR.opponentExist  ) { 
+
+
+            // for black piece check only
+            if ( redTurn ) {
+                if ( checkColor==="checkBlack" || selectedPiece.isKing ) {  
+                    if (canJump === false) {
+                        canJump = true;
+                    }
+                }
+            }
+
+            // no need for jump recursive check
+        }
+    }
+
+
+    // more checks for black pieces
+    if (jumpDownLeftCoord.row >=0 && jumpDownLeftCoord.row<8 && 
+        jumpDownLeftCoord.col>=0 && jumpDownLeftCoord.col<8) {
+
+        if ( board[jumpDownLeftCoord.row][jumpDownLeftCoord.col] === null && 
+            cells[jumpDownLeftCoord.row][jumpDownLeftCoord.col].classList.contains("noPieceHere") !== true &&
+            opponent_DL.opponentExist  ) {
+
+            // for red piece check only
+            if ( !redTurn ) {
+                if ( checkColor==="checkRed" || selectedPiece.isKing ) {  
+
+                    if (canJump === false) {
+                        canJump = true;
+                    }
+                } 
+            }
+        }
+    }
+
+    // more checks for black pieces
+    if (jumpDownRightCoord.row >=0 && jumpDownRightCoord.row<8 && 
+        jumpDownRightCoord.col>=0 && jumpDownRightCoord.col<8) {
+
+        if (board[jumpDownRightCoord.row][jumpDownRightCoord.col] === null && 
+            cells[jumpDownRightCoord.row][jumpDownRightCoord.col].classList.contains("noPieceHere") !== true &&
+            opponent_DR.opponentExist  ) {
+
+            // for red piece check only
+            if ( !redTurn ) {
+                if ( checkColor==="checkRed" || selectedPiece.isKing ) {  
+
+                    if (canJump === false) {
+                        canJump = true;
+                    }
+                }  
+            }
+        }
+    }
+    
+    return canJump;
+}

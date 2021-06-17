@@ -1,16 +1,16 @@
-import { getAvailableMoveSpaces, checkAvailableJumpSpaces } from './move_or_jump.js';
+import { getAvailableMoveSpaces, checkAvailableJumpSpaces, checkOpponentPieceMoves, checkOpponentPieceJumps } from './move_or_jump.js';
 import { opponentUpLeft, opponentUpRight, opponentDownLeft, opponentDownRight } from './move_or_jump.js';
 
 /*----------- Game State Data ----------*/
 
 // const board = [
-//     [null, 0, null, null, null, 2, null, 3],
-//     [4, null, null, null, 18, null, null, null],
-//     [null, 24, null, 9, null, 10, null, 11],
-//     [null, null, null, null, 24, null, null, null],
+//     [null, 0, null, 1, null, 2, null, 3],
+//     [4, null, 5, null, 6, null, 7, null],
+//     [null, 8, null, 9, null, 10, null, 11],
+//     [12, null, 13, null, null, null, 15, null],
+//     [null, null, null, 14, null, null, null, null],
 //     [null, null, null, null, null, null, null, null],
-//     [12, null, 13, null, 14, null, 15, null],
-//     [null, null, null, 17, null, 8, null, null],
+//     [null, 16, null, 17, null, 18, null, 19],
 //     [20, null, 21, null, 22, null, 23, null]
 // ]
 
@@ -172,28 +172,25 @@ const findPiece = (pieceId) => {
 
     return coordinatePiece;
 };
-// console.log( findPiece('2') );  //test
 
 
 // gets ID and index of the board cell its on
-const getSelectedPiece = () => {
-    // console.log(event);
-    selectedPiece.pieceId = parseInt(event.target.id);
+const getSelectedPiece = (selectedPiece_param) => {
 
-    selectedPiece.indexOfBoardPiece = findPiece(selectedPiece.pieceId);
+    selectedPiece_param.pieceId = parseInt(event.target.id);
+    selectedPiece_param.indexOfBoardPiece = findPiece(selectedPiece.pieceId);
 
-    // console.log(selectedPiece.indexOfBoardPiece );
-
-    isPieceKing();
+    isPieceKing(selectedPiece_param);
 }
 
 
 // checks if selected piece is a king
-const isPieceKing = () => {
-    if (document.getElementById(selectedPiece.pieceId).classList.contains("king")) {
-        selectedPiece.isKing = true;
+const isPieceKing = (selectedPiece_param) => {
+    // if (document.getElementById(selectedPiece_param.pieceId).classList.contains("king")) {
+    if ($(`#${selectedPiece_param.pieceId}`).hasClass("king")) {
+        selectedPiece_param.isKing = true;
     } else {
-        selectedPiece.isKing = false;
+        selectedPiece_param.isKing = false;
     }
 }
 
@@ -201,13 +198,13 @@ const isPieceKing = () => {
 
 
 // gives the piece a green highlight for the user (showing its movable)
-const givePieceBorderandClick = (selectedPiece) => {
+const givePieceBorderandClick = (selectedPiece_param) => {
 
-    console.log( selectedPiece.possibleMoveSpaces );
-    console.log( selectedPiece.possibleMoveSpaces[0] );
+    console.log( selectedPiece_param.possibleMoveSpaces );
+    console.log( selectedPiece_param.possibleMoveSpaces[0] );
 
-    if (selectedPiece.possibleMoveSpaces.length !== 0 ) {
-        $(`#${selectedPiece.pieceId}`).css( "border", "3px solid green" );
+    if (selectedPiece_param.possibleMoveSpaces.length !== 0 ) {
+        $(`#${selectedPiece_param.pieceId}`).css( "border", "3px solid green" );
         
         giveCellsClick();
     } else {
@@ -365,35 +362,140 @@ const removeEventListeners = (redTurn) => {
 
 
 // Check whether opponent run out of moves
-const checkOpponentMoves = (redTurn) => {
+const checkOpponentMoves = (checkColor) => {
     
-    let opponentCanMove = true;
+    let opponentCanMove = [];
     
-    if(redTurn) {
-        for (let i = 0; i < blackTurntext.length; i++) {
-                blackTurntext[i].style.color = "lightGrey";
-                redTurnText[i].style.color = "black";
+    if (checkColor==="checkBlack") {
+        let remainBlackPieces = $(blackPiece);
+
+        for (let i = 0; i < remainBlackPieces.length; i++) {
+                // console.log( remainBlackPieces[i] );
+                let tempSelectPiece = {
+                    pieceId: -1,
+                    indexOfBoardPiece: {row:-1, col:-1},
+                    isKing: false,
+                };
+
+                tempSelectPiece.pieceId = $( remainBlackPieces[i] ).attr("id")
+                tempSelectPiece.indexOfBoardPiece = findPiece(tempSelectPiece.pieceId);
+
+                const opponentPieceCanMove = checkOpponentPieceMoves(tempSelectPiece, board, cells, "checkBlack"); 
+                opponentCanMove.push(opponentPieceCanMove);
+                console.log( opponentCanMove );  
+            }
+    } else if (checkColor==="checkRed") {
+        let remainRedsPieces = $(redPiece);
+
+        for (let i = 0; i < remainRedsPieces.length; i++) {
+                // console.log( remainBlackPieces[i] );
+                let tempSelectPiece = {
+                    pieceId: -1,
+                    indexOfBoardPiece: {row:-1, col:-1},
+                    isKing: false,
+                };
+
+                tempSelectPiece.pieceId = $( remainRedsPieces[i] ).attr("id")
+                tempSelectPiece.indexOfBoardPiece = findPiece(tempSelectPiece.pieceId);
+
+                const opponentPieceCanMove = checkOpponentPieceMoves(tempSelectPiece, board, cells, "checkRed"); 
+                opponentCanMove.push(opponentPieceCanMove);
+                console.log( opponentCanMove );  
             }
     }
-    
-    return opponentCanMove;
+
+     // true if opponent can move
+     return opponentCanMove.includes(true); 
 }
+
+
+// Check whether opponent run out of jumps
+const checkOpponentJumps = (checkColor) => {
+    
+    let opponentCanJump = [];
+    
+    if (checkColor==="checkBlack") {
+        let remainBlackPieces = $(blackPiece);
+
+        for (let i = 0; i < remainBlackPieces.length; i++) {
+                let tempSelectPiece = {
+                    pieceId: -1,
+                    indexOfBoardPiece: {row:-1, col:-1},
+                    isKing: false,
+                };
+
+                tempSelectPiece.pieceId = $( remainBlackPieces[i] ).attr("id")
+                tempSelectPiece.indexOfBoardPiece = findPiece(tempSelectPiece.pieceId);
+
+                const opponentPieceCanJump = checkOpponentPieceJumps(tempSelectPiece, board, cells, redTurn, "checkBlack"); 
+                opponentCanJump.push(opponentPieceCanJump);
+                console.log( opponentCanJump );  
+            }
+    } else if (checkColor==="checkRed") {
+        let remainRedsPieces = $(redPiece);
+
+        for (let i = 0; i < remainRedsPieces.length; i++) {
+                // console.log( remainBlackPieces[i] );
+                let tempSelectPiece = {
+                    pieceId: -1,
+                    indexOfBoardPiece: {row:-1, col:-1},
+                    isKing: false,
+                };
+
+                tempSelectPiece.pieceId = $( remainRedsPieces[i] ).attr("id")
+                tempSelectPiece.indexOfBoardPiece = findPiece(tempSelectPiece.pieceId);
+
+                const opponentPieceCanJump = checkOpponentPieceJumps(tempSelectPiece, board, cells, redTurn, "checkRed"); 
+                opponentCanJump.push(opponentPieceCanJump);
+                console.log( opponentCanJump );  
+            }
+    }
+
+     // true if opponent can jump
+     return opponentCanJump.includes(true); 
+}
+
+
 
 // Checks for a win
 const checkForWin = () => {
+
+    const blackCanMove = checkOpponentMoves("checkBlack");
+    const redCanMove = checkOpponentMoves("checkRed");
+    const blackCanJump = checkOpponentJumps("checkBlack");
+    const redCanJump = checkOpponentJumps("checkRed");
+
+    console.log('check opponent jump')
+    // console.log( blackCanJump );
+    // console.log( redCanJump );
+
     if (blackScore === 0) {
         redTurnText[0].style.color = "black";
         blackTurntext[0].style.display = "none";
         redTurnText[0].textContent = "RED WINS!";
+        return;
         }
-    
     else if (redScore === 0) {
         blackTurntext[0].style.color = "black";
         redTurnText[0].style.display = "none";
-        blackTurntext[0].textContent = "BLACK WINS!";
-    
+        blackTurntext[0].textContent = "BLACK WINS!";  
+        return;  
     } 
+    else if ( (blackCanMove === false && blackCanJump === false) && redTurn) {   // if black opponent can no longer move, and it's reds turn
+        redTurnText[0].style.color = "black";
+        blackTurntext[0].style.display = "none";
+        redTurnText[0].textContent = "RED WINS!";
+        return;
+        }
+    else if ( (redCanMove === false && redCanJump === false) && !redTurn) {   // if red opponent can no longer move, and it's black turn
+        blackTurntext[0].style.color = "black";
+        redTurnText[0].style.display = "none";
+        blackTurntext[0].textContent = "BLACK WINS!";
+        return;
+    } 
+
     changePlayer();
+
 }
 
 // Switches players turn
@@ -408,10 +510,6 @@ const changePlayer = () => {
         
     } else {
         redTurn = true;
-        // for (let i = 0; i < blackTurntext.length; i++) {
-        //     blackTurntext[i].style.color = "lightGrey";
-        //     redTurnText[i].style.color = "black";
-        // }
         blackTurntext[0].style.color = "lightGrey";
         redTurnText[0].style.color = "black";
     }

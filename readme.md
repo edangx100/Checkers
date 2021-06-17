@@ -14,4 +14,5 @@
 ![alt text](https://github.com/edangx100/Checkers/blob/main/Images/image4.png?raw=true)
 
 ### Further work and next steps
-Next step: Win condition when player runs out of moves
+1) Functions modularity can be improved.
+2) The player without pieces remaining, or who cannot move due to being blocked, loses the game. The code for this portion can be further optimised.
