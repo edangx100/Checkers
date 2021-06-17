@@ -84,10 +84,6 @@ const getPlayerPieces = () => {
         playerPieces = blacksPieces;
     }
 
-    // let newCells = removeCellonclick(cells)
-    // cells = newCells.map(function(arr) {
-    //     return arr.slice();
-    // });
     removeCellonclick(cells);
 
     resetBorders(playerPieces);
@@ -118,7 +114,7 @@ const removeCellonclick = () => {
             $( cells[i][j] ).off( "click" , makeMove);
 
             // remove possible colour highlights at DOM for previous selected piece
-            cells[i][j].classList.remove("possibleMove");
+            $(cells[i][j]).removeClass("possibleMove");
             cells[i][j].classList.remove("possibleJump");
         }
 
@@ -254,17 +250,17 @@ const makeMove = (event) => {
 
 
     $(`${selectedPiece.pieceId}`).remove();
-    cells[presentRow][presentCol].innerHTML = "";
+    $(cells[presentRow][presentCol]).empty();
 
     const redPiece = "p";
     const blackPiece = "span";
 
     if (redTurn) {
         if (selectedPiece.isKing) {
-            cells[moveToRow][moveToCol].innerHTML = `<p class="red-piece king" id="${selectedPiece.pieceId}"></p>`;
+            $( cells[moveToRow][moveToCol] ).html( `<p class="red-piece king" id="${selectedPiece.pieceId}"></p>` );
             redsPieces = $(redPiece);
         } else {
-            cells[moveToRow][moveToCol].innerHTML = `<p class="red-piece" id="${selectedPiece.pieceId}"></p>`;
+            $( cells[moveToRow][moveToCol] ).html(`<p class="red-piece" id="${selectedPiece.pieceId}"></p>`);
             redsPieces = $(redPiece);
         }
     } else {
@@ -334,7 +330,9 @@ const changeData = ( [presentRow_param, presentCol_param], possibleMove_param, r
             let oppCol = opponentToRemove.col;
 
             board[oppRow][oppCol] = null;
-            cells[oppRow][oppCol].innerHTML ="";
+            console.log("oooooooi");
+            $( cells[oppRow][oppCol] ).empty();
+            // cells[oppRow][oppCol].innerHTML ="";
 
             if (redTurn) blackScore--;
             if (!redTurn) redScore--;
@@ -368,11 +366,6 @@ const removeEventListeners = (redTurn) => {
 // Checks for a win
 const checkForWin = () => {
     if (blackScore === 0) {
-        // for (let i = 0; i < redTurnText.length; i++) {
-        //     redTurnText[i].style.color = "black";
-        //     blackTurntext[i].style.display = "none";
-        //     redTurnText[i].textContent = "RED WINS!";
-        // }
         redTurnText[0].style.color = "black";
         blackTurntext[0].style.display = "none";
         redTurnText[0].textContent = "RED WINS!";

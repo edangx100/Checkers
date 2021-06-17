@@ -28,7 +28,7 @@ const moveDownRight = (coordinate) => {
         jumpDir: ""  };
 };
 
-const getAvailableMoveSpaces = (selectedPiece, board, cells, turn) => {
+const getAvailableMoveSpaces = (selectedPiece, board, cells, redTurn) => {
 
     console.log(selectedPiece.indexOfBoardPiece);
     console.log('move');
@@ -43,12 +43,12 @@ const getAvailableMoveSpaces = (selectedPiece, board, cells, turn) => {
 
     if (upLeftCoord.row >=0 && upLeftCoord.col>=0) {
         if (board[upLeftCoord.row][upLeftCoord.col] === null && 
-            cells[upLeftCoord.row][upLeftCoord.col].classList.contains("noPieceHere") !== true) {
+            $(cells[upLeftCoord.row][upLeftCoord.col]).hasClass("noPieceHere") !== true) {
             
-            // '!turn' means black turn
-            if ( !turn || selectedPiece.isKing) {  
+            // '!redTurn' means black turn
+            if ( !redTurn || selectedPiece.isKing) {  
                 console.log('upLeft possible');
-                cells[upLeftCoord.row][upLeftCoord.col].classList.add("possibleMove");
+                $(cells[upLeftCoord.row][upLeftCoord.col]).addClass("possibleMove");
                 selectedPiece.possibleMoveSpaces.push( upLeftCoord );
             }
         }
@@ -56,12 +56,12 @@ const getAvailableMoveSpaces = (selectedPiece, board, cells, turn) => {
 
     if (upRightCoord.row >=0 && upRightCoord.col>=0) {
         if (board[upRightCoord.row][upRightCoord.col] === null && 
-            cells[upRightCoord.row][upRightCoord.col].classList.contains("noPieceHere") !== true) {
+            $(cells[upRightCoord.row][upRightCoord.col]).hasClass("noPieceHere") !== true) {
 
-            // '!turn' means black turn
-            if ( !turn || selectedPiece.isKing) { 
+            // '!redTurn' means black turn
+            if ( !redTurn || selectedPiece.isKing) { 
                 console.log('upRight possible');
-                cells[upRightCoord.row][upRightCoord.col].classList.add("possibleMove");
+                $(cells[upRightCoord.row][upRightCoord.col]).addClass("possibleMove");
                 selectedPiece.possibleMoveSpaces.push( upRightCoord );
             }
         }
@@ -71,11 +71,11 @@ const getAvailableMoveSpaces = (selectedPiece, board, cells, turn) => {
     if (downLeftCoord.row >=0 && downLeftCoord.row<8 && 
         downLeftCoord.col>=0 && downLeftCoord.col<8) {
         if (board[downLeftCoord.row][downLeftCoord.col] === null && 
-            cells[downLeftCoord.row][downLeftCoord.col].classList.contains("noPieceHere") !== true) {
+            $(cells[downLeftCoord.row][downLeftCoord.col]).hasClass("noPieceHere") !== true) {
             
-            if ( turn || selectedPiece.isKing) {
+            if ( redTurn || selectedPiece.isKing) {
                 console.log('downLeft possible');
-                cells[downLeftCoord.row][downLeftCoord.col].classList.add("possibleMove");
+                $(cells[downLeftCoord.row][downLeftCoord.col]).addClass("possibleMove");
                 selectedPiece.possibleMoveSpaces.push( downLeftCoord );
             }
                 
@@ -85,12 +85,12 @@ const getAvailableMoveSpaces = (selectedPiece, board, cells, turn) => {
     if (downRightCoord.row >=0 && downRightCoord.row<8 && 
         downRightCoord.col>=0 && downRightCoord.col<8) {
         if (board[downRightCoord.row][downRightCoord.col] === null && 
-            cells[downRightCoord.row][downRightCoord.col].classList.contains("noPieceHere") !== true) {
+            $(cells[downRightCoord.row][downRightCoord.col]).hasClass("noPieceHere") !== true) {
 
 
-            if ( turn || selectedPiece.isKing) {
+            if ( redTurn || selectedPiece.isKing) {
                 console.log('downRight possible');
-                cells[downRightCoord.row][downRightCoord.col].classList.add("possibleMove");
+                $(cells[downRightCoord.row][downRightCoord.col]).addClass("possibleMove");
                 selectedPiece.possibleMoveSpaces.push( downRightCoord );
             }
         }
@@ -158,7 +158,7 @@ const jumpDownRight = (jumpFrom) => {
 };
 
 // check opponent
-const opponentUpLeft = (coordinate, board_param, turn_param) => {
+const opponentUpLeft = (coordinate, board_param, redTurn) => {
     const oppRow = coordinate.row - 1;
     const oppCol = coordinate.col - 1;
 
@@ -170,13 +170,13 @@ const opponentUpLeft = (coordinate, board_param, turn_param) => {
 
     if (oppRow >=0 && oppRow<8 && oppCol>=0 && oppCol<8) {
         if ( board_param[oppRow][oppCol] !== null ) {
-            if (turn_param) opponent.opponentExist = (board_param[oppRow][oppCol] >= 12) ? true : false;
+            if (redTurn) opponent.opponentExist = (board_param[oppRow][oppCol] >= 12) ? true : false;
                 else opponent.opponentExist = (board_param[oppRow][oppCol] < 12) ? true : false;
         }
     }
     return opponent;
 };
-const opponentUpRight = (coordinate, board_param, turn_param) => {
+const opponentUpRight = (coordinate, board_param, redTurn) => {
     const oppRow = coordinate.row - 1;
     const oppCol = coordinate.col + 1;
 
@@ -188,13 +188,13 @@ const opponentUpRight = (coordinate, board_param, turn_param) => {
 
     if (oppRow >=0 && oppRow<8 && oppCol>=0 && oppCol<8) {
         if ( board_param[oppRow][oppCol] !== null ) {
-            if (turn_param) opponent.opponentExist = (board_param[oppRow][oppCol] >= 12) ? true : false;
+            if (redTurn) opponent.opponentExist = (board_param[oppRow][oppCol] >= 12) ? true : false;
                 else opponent.opponentExist = (board_param[oppRow][oppCol] < 12) ? true : false;
         }
     }
     return opponent;
 };
-const opponentDownLeft = (coordinate, board_param, turn_param) => {
+const opponentDownLeft = (coordinate, board_param, redTurn) => {
     const oppRow = coordinate.row + 1;
     const oppCol = coordinate.col - 1;
     
@@ -206,13 +206,13 @@ const opponentDownLeft = (coordinate, board_param, turn_param) => {
 
     if (oppRow >=0 && oppRow<8 && oppCol>=0 && oppCol<8) {
         if ( board_param[oppRow][oppCol] !== null ) {
-            if (turn_param) opponent.opponentExist = (board_param[oppRow][oppCol] >= 12) ? true : false;
+            if (redTurn) opponent.opponentExist = (board_param[oppRow][oppCol] >= 12) ? true : false;
                 else opponent.opponentExist = (board_param[oppRow][oppCol] < 12) ? true : false;
         }
     }
     return opponent;
 };
-const opponentDownRight = (coordinate, board_param, turn_param) => {
+const opponentDownRight = (coordinate, board_param, redTurn) => {
     const oppRow = coordinate.row + 1;
     const oppCol = coordinate.col + 1;
     
@@ -224,7 +224,7 @@ const opponentDownRight = (coordinate, board_param, turn_param) => {
 
     if (oppRow >=0 && oppRow<8 && oppCol>=0 && oppCol<8) {
         if ( board_param[oppRow][oppCol] !== null ) {
-            if (turn_param) opponent.opponentExist = (board_param[oppRow][oppCol] >= 12) ? true : false;
+            if (redTurn) opponent.opponentExist = (board_param[oppRow][oppCol] >= 12) ? true : false;
                 else opponent.opponentExist = (board_param[oppRow][oppCol] < 12) ? true : false;
         }
     }
@@ -232,7 +232,7 @@ const opponentDownRight = (coordinate, board_param, turn_param) => {
 };
 
 
-const checkAvailableJumpSpaces = ( selectedPiece, board, cells, turn, previousJump="", jumpFromCoord={} ) => {
+const checkAvailableJumpSpaces = ( selectedPiece, board, cells, redTurn, previousJump="", jumpFromCoord={} ) => {
 
     console.log(selectedPiece.indexOfBoardPiece);
     console.log('jump');
@@ -248,18 +248,18 @@ const checkAvailableJumpSpaces = ( selectedPiece, board, cells, turn, previousJu
 
     // console.log(jumpDownLeftCoord);
     console.log( "opponent UL ");
-    console.log( opponentUpLeft(jumpFromCoord, board, turn) );
+    console.log( opponentUpLeft(jumpFromCoord, board, redTurn) );
     console.log( "opponent UR ");
-    console.log( opponentUpRight(jumpFromCoord, board, turn) );
+    console.log( opponentUpRight(jumpFromCoord, board, redTurn) );
     console.log( "opponent DL ");
-    console.log( opponentDownLeft(jumpFromCoord, board, turn) );
+    console.log( opponentDownLeft(jumpFromCoord, board, redTurn) );
     console.log( "opponent DR ");
-    console.log( opponentDownRight(jumpFromCoord, board, turn) );
+    console.log( opponentDownRight(jumpFromCoord, board, redTurn) );
 
-    const opponent_UL = opponentUpLeft(jumpFromCoord, board, turn);
-    const opponent_UR = opponentUpRight(jumpFromCoord, board, turn);
-    const opponent_DL = opponentDownLeft(jumpFromCoord, board, turn);
-    const opponent_DR = opponentDownRight(jumpFromCoord, board, turn);
+    const opponent_UL = opponentUpLeft(jumpFromCoord, board, redTurn);
+    const opponent_UR = opponentUpRight(jumpFromCoord, board, redTurn);
+    const opponent_DL = opponentDownLeft(jumpFromCoord, board, redTurn);
+    const opponent_DR = opponentDownRight(jumpFromCoord, board, redTurn);
 
 
     if( previousJump !== "downRight") {
@@ -269,8 +269,8 @@ const checkAvailableJumpSpaces = ( selectedPiece, board, cells, turn, previousJu
                 cells[jumpUpLeftCoord.row][jumpUpLeftCoord.col].classList.contains("noPieceHere") !== true &&
                 opponent_UL.opponentExist ) {
                 
-                // !turn means black turn
-                if ( !turn || selectedPiece.isKing) {  
+                // !redTurn means black turn
+                if ( !redTurn || selectedPiece.isKing) {  
                     console.log('Jump upLeft possible');
                     cells[jumpUpLeftCoord.row][jumpUpLeftCoord.col].classList.add("possibleJump");
                     
@@ -279,7 +279,7 @@ const checkAvailableJumpSpaces = ( selectedPiece, board, cells, turn, previousJu
                     selectedPiece.possibleMoveSpaces.push( jumpToCoord_UL );
 
                     // recursive check 
-                    checkAvailableJumpSpaces(selectedPiece, board, cells, turn, "upLeft", jumpToCoord_UL);
+                    checkAvailableJumpSpaces(selectedPiece, board, cells, redTurn, "upLeft", jumpToCoord_UL);
                 }
             }
         }
@@ -292,8 +292,8 @@ const checkAvailableJumpSpaces = ( selectedPiece, board, cells, turn, previousJu
                 cells[jumpUpRightCoord.row][jumpUpRightCoord.col].classList.contains("noPieceHere") !== true &&
                 opponent_UR.opponentExist  ) { 
 
-                // !turn means black turn
-                if ( !turn || selectedPiece.isKing) {
+                // !redTurn means black turn
+                if ( !redTurn || selectedPiece.isKing) {
                     console.log('Jump upRight possible');
                     cells[jumpUpRightCoord.row][jumpUpRightCoord.col].classList.add("possibleJump");
 
@@ -302,7 +302,7 @@ const checkAvailableJumpSpaces = ( selectedPiece, board, cells, turn, previousJu
                     selectedPiece.possibleMoveSpaces.push( jumpToCoord_UR );
 
                     // recursive check
-                    checkAvailableJumpSpaces(selectedPiece, board, cells, turn, "upRight", jumpToCoord_UR);
+                    checkAvailableJumpSpaces(selectedPiece, board, cells, redTurn, "upRight", jumpToCoord_UR);
                 }
             }
         }
@@ -317,7 +317,7 @@ const checkAvailableJumpSpaces = ( selectedPiece, board, cells, turn, previousJu
                 cells[jumpDownLeftCoord.row][jumpDownLeftCoord.col].classList.contains("noPieceHere") !== true &&
                 opponent_DL.opponentExist  ) {
 
-                if ( turn || selectedPiece.isKing) {
+                if ( redTurn || selectedPiece.isKing) {
                     console.log('Jump downLeft possible');
                     cells[jumpDownLeftCoord.row][jumpDownLeftCoord.col].classList.add("possibleJump");
 
@@ -326,7 +326,7 @@ const checkAvailableJumpSpaces = ( selectedPiece, board, cells, turn, previousJu
                     selectedPiece.possibleMoveSpaces.push( jumpToCoord_DL );
 
                     // recursive check
-                    checkAvailableJumpSpaces(selectedPiece, board, cells, turn, "downLeft", jumpToCoord_DL);
+                    checkAvailableJumpSpaces(selectedPiece, board, cells, redTurn, "downLeft", jumpToCoord_DL);
                 }
             }
         }
@@ -339,7 +339,7 @@ const checkAvailableJumpSpaces = ( selectedPiece, board, cells, turn, previousJu
                 cells[jumpDownRightCoord.row][jumpDownRightCoord.col].classList.contains("noPieceHere") !== true &&
                 opponent_DR.opponentExist  ) {
 
-                if ( turn || selectedPiece.isKing) {
+                if ( redTurn || selectedPiece.isKing) {
                     console.log('Jump downRight possible');
                     cells[jumpDownRightCoord.row][jumpDownRightCoord.col].classList.add("possibleJump");
 
@@ -348,7 +348,7 @@ const checkAvailableJumpSpaces = ( selectedPiece, board, cells, turn, previousJu
                     selectedPiece.possibleMoveSpaces.push( jumpToCoord_DR );
 
                     // recursive check
-                    checkAvailableJumpSpaces(selectedPiece, board, cells, turn, "downRight", jumpToCoord_DR);
+                    checkAvailableJumpSpaces(selectedPiece, board, cells, redTurn, "downRight", jumpToCoord_DR);
                 }
             }
         }
