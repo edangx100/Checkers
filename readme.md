@@ -9,4 +9,3 @@
 - Figuring out the logic and data structure to enable 'Multiple jumps'
 
 ### Further work and next steps
-- Win condition if opponent runs out of possible moves can be added.
